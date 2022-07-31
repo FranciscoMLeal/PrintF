@@ -252,11 +252,32 @@ void	print_hex(int i, char x_size)
 	free(printer);
 }
 
-void	print_pointer(void *n)
+char	*ft_addprefix(char *printer)
+{
+	int	len;
+	int	i;
+	char *swapper;
+
+	len = norm_strlen(printer);
+	swapper = malloc(len + 3);
+	swapper[0] = '0';
+	swapper[1] = 'x';
+	i = 2;
+	while (i <= len + 3)
+	{
+		swapper[i] = printer[i - 2];
+		i++;
+	}
+	free(printer);
+	return(swapper);
+}
+
+void	print_pointer(unsigned long n)
 {
 	char *printer;
 
-	printer = ft_itohex((int)n);
+	printer = ft_itohex(n);
+	printer = ft_addprefix(printer);
 	print_string(printer);
 	free(printer);
 }
@@ -266,10 +287,6 @@ void	print_char(int i)
 	write(1, &i, 1);
 }
 
-void	howtofinnishthis(int eu, int ela)
-{
-
-}
 
 
 
@@ -289,33 +306,19 @@ int	ft_printf(const char *var, ...)
 		{
 			/// Looks for flag kind cspdiuxX%
 			if(var[i + 1] == 'c')
-			{
 				print_char(va_arg(args, int));
-			}
 			if(var[i + 1] == 's')
-			{
 				print_string(va_arg(args, char *));
-			}
 			if(var[i + 1] == 'p')   /// Imprime um Pointer
-			{
-				print_pointer(va_arg(args, void *)); // muito fixe mas não funciona, o valor não está a aparecer incompleto tens de debuggar para perceber mas a melhor soluçãp será fazer mais uma função que funcione com void*... Talvez essa função funcione em todos os hex e mais
-			}
+				print_pointer(va_arg(args, unsigned long)); // muito fixe mas não funciona, o valor não está a aparecer incompleto tens de debuggar para perceber mas a melhor soluçãp será fazer mais uma função que funcione com void*... Talvez essa função funcione em todos os hex e mais
 			if(var[i + 1] == 'd' || var[i + 1] == 'i') // Leva um int 
-			{
 				print_int(va_arg(args, int));
-			}
 			if(var[i + 1] == 'u')
-			{
 				print_uint(va_arg(args, unsigned int));
-			}
 			if(var[i + 1] == 'x' || var[i + 1] == 'X')  /// faz um hexa 
-			{
 				print_hex(va_arg(args, unsigned int), var[i + 1]);
-			}
 			if(var[i + 1] == '%')
-			{
 				print_char('%');
-			}
 			i += 2;
 		}
 		else               // imprime sem encontrar a flag
@@ -348,11 +351,13 @@ int	main()
 	
 
 	///Real PrintF this printf is being wrongly used
-	ft_printf("\n Real Printf Tester \n");
+	printf("\n Real Printf Tester \n");
 
 	printf("Teste Pointer to char * : %p \n", &yes);
 	printf("Teste Pointer to char: %p \n", &c);
 	printf("Teste Pointer to int: %p \n", &i);
+
+
 
 
 	// ///Real Hex Values
